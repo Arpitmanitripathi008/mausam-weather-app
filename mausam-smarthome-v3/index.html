@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0757a0">
+<title>Mausam SmartHome</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div><b>MAUSAM</b><small>SmartHome</small></div>
+    </div>
+    <button class="location-btn" id="locationBtn" type="button"><span class="pin">●</span> Kanpur</button>
+  </header>
+
+  <nav class="main-nav" aria-label="Main navigation">
+    <button class="nav active" type="button" data-page="home"><span>⌂</span> Home</button>
+    <button class="nav" type="button" data-page="forecast"><span>☁</span> Forecast</button>
+    <button class="nav" type="button" data-page="saved"><span>☆</span> Saved</button>
+    <button class="nav" type="button" data-page="profile"><span>●</span> Profile</button>
+  </nav>
+
+  <main>
+    <section id="home" class="page">
+      <section class="hero">
+        <div class="hero-head">
+          <div><small>Today · 24 September</small><h1>Good evening</h1></div>
+          <div class="hero-icon" aria-label="Partly cloudy">☁</div>
+        </div>
+        <div class="hero-weather">
+          <strong>29<sup>°C</sup></strong>
+          <div><b>Partly cloudy</b><small>Feels like 31°C</small></div>
+        </div>
+        <div class="hero-stats">
+          <span><i>💧</i> Humidity <b>68%</b></span>
+          <span><i>≋</i> Wind <b>12 km/h</b></span>
+          <span><i>☂</i> Rain <b>35%</b></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="head">
+          <div><label>PERSONALIZATION</label><h2>What matters to you?</h2></div>
+          <small id="count" class="selected-count">1 selected</small>
+        </div>
+        <p class="note">Select as many interests as you want. Your homepage combines them.</p>
+        <div class="personas">
+          <button class="persona active" type="button" data-p="fitness"><i>🏃</i><span><b>Fitness</b><small>Running & outdoor</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="health"><i>♥</i><span><b>Health</b><small>AQI, UV & comfort</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="commuter"><i>🚗</i><span><b>Commuter</b><small>Travel & visibility</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="traveler"><i>✈</i><span><b>Traveler</b><small>Trips & destinations</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="beach"><i>≈</i><span><b>Beach & Surf</b><small>Waves & tides</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="agriculture"><i>🌱</i><span><b>Agriculture</b><small>Rain & soil</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="family"><i>⌂</i><span><b>Family</b><small>School & safety</small></span><em>✓</em></button>
+          <button class="persona" type="button" data-p="events"><i>▦</i><span><b>Events</b><small>Outdoor gatherings</small></span><em>✓</em></button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="head">
+          <div><label>FOR YOU</label><h2 id="title">Fitness weather</h2></div>
+          <button id="why" class="why-btn" type="button">Why?</button>
+        </div>
+        <div class="smart"><div class="smart-badge">✦ SMART RECOMMENDATION</div><h3 id="recTitle"></h3><p id="rec"></p></div>
+        <div class="cards" id="cards"></div>
+      </section>
+
+      <section class="section">
+        <div class="head"><div><label>DAY PLANNER</label><h2>Plan around weather</h2></div></div>
+        <div class="plan" id="plan"></div>
+        <button class="primary" id="planBtn" type="button">Generate my day plan</button>
+      </section>
+    </section>
+
+    <section id="forecast" class="page hidden">
+      <div class="page-title"><label>FORECAST</label><h1>Next 5 days</h1><p>Demo forecast for the SIH prototype.</p></div>
+      <div id="forecastList"></div>
+    </section>
+
+    <section id="saved" class="page hidden">
+      <div class="page-title"><label>SAVED PLACES</label><h1>Your locations</h1><p>Keep important places together.</p></div>
+      <div class="saved">
+        <article><span class="place-icon">●</span><b>Kanpur</b><small>Current location</small><strong>29°C</strong></article>
+        <article><span class="place-icon">☆</span><b>Delhi</b><small>Saved destination</small><strong>32°C</strong></article>
+        <article><span class="place-icon">☆</span><b>Mumbai</b><small>Saved destination</small><strong>28°C</strong></article>
+      </div>
+    </section>
+
+    <section id="profile" class="page hidden">
+      <div class="page-title"><label>PROFILE</label><h1>Your preferences</h1><p>Multiple personalization profiles are supported.</p></div>
+      <div class="profile-box">
+        <p>Selected profiles <b id="summary">Fitness</b></p>
+        <p>Personalization <b class="status">Enabled</b></p>
+        <p>Location <b>Kanpur</b></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Explainable personalization modal -->
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box" role="document">
+    <div class="modal-top">
+      <div><label>TRANSPARENT PERSONALIZATION</label><h2 id="modalTitle">Why these cards?</h2></div>
+      <button id="close" class="modal-close" type="button" aria-label="Close explanation">×</button>
+    </div>
+    <div class="modal-highlight"><span>✦</span><p id="whyText"></p></div>
+    <div class="modal-rules">
+      <div><b>01</b><span>Your selected profiles affect priority.</span></div>
+      <div><b>02</b><span>Current weather changes relevance.</span></div>
+      <div><b>03</b><span>Higher-relevance information appears first.</span></div>
+    </div>
+    <button id="done" class="primary modal-done" type="button">Got it</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="script.js"></script>
+</body>
+</html>
