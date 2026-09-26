@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d67b5">
+  <title>MAUSAM SmartHome</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="weatherScene" class="weather-scene cloudy">
+  <div class="scene-stars" aria-hidden="true"></div>
+  <div class="scene-clouds"></div>
+  <div class="scene-rain"></div>
+  <div class="scene-sun" aria-hidden="true"></div>
+  <div class="scene-moon" aria-hidden="true"></div>
+  <div class="scene-lightning"></div>
+</div>
+
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div><b>MAUSAM</b><small>SmartHome</small></div>
+    </div>
+    <div class="header-actions">
+      <button class="location-btn" id="locationBtn">● Kanpur</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" title="Toggle dark mode">☾ <span class="theme-label">Dark</span></button>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel">☰ <span>Menu</span></button>
+      <div class="menu-panel" id="menuPanel">
+        <button data-view="home">⌂ Home</button>
+        <button data-view="details">☷ All Weather Details</button>
+        <button data-view="saved">☆ Saved Locations</button>
+        <button data-view="profile">● Profile</button>
+        <button data-view="personalization">⚙ Personalization</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="view active">
+      <div class="hero">
+        <div class="hero-top">
+          <div><small id="todayLabel">Today</small><h1 id="greeting">Good evening</h1></div>
+          <div id="heroIcon" class="hero-icon">☁️</div>
+        </div>
+        <div class="hero-temp-row">
+          <div class="hero-temp"><span id="temp">29</span><span>°C</span></div>
+          <div>
+            <strong id="condition">Partly cloudy</strong>
+            <small>Feels like <span id="feelsLike">31</span>°C</small>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div><span class="metric-icon">🌡️</span><small>Temperature</small><b id="tempStat">29°C</b></div>
+          <div><span class="metric-icon">💧</span><small>Humidity</small><b id="humidity">68%</b></div>
+          <div><span class="metric-icon">💨</span><small>Wind</small><b id="wind">12 km/h</b></div>
+          <div><span class="metric-icon">🌧️</span><small>Rain</small><b id="rainChance">35%</b></div>
+        </div>
+      </div>
+
+      <section class="section personalized-section" id="personalizedSection">
+        <div class="section-head">
+          <div><small class="eyebrow">PERSONALIZED FOR YOU</small><h2 id="personalizedTitle">Based on your interests</h2></div>
+          <button class="count-pill" type="button" data-view="personalization">Edit</button>
+        </div>
+        <p class="muted" id="personalizedSubtitle">Your selected interests are used to prioritize the most useful weather information.</p>
+        <div id="personalizedCards" class="cards-grid"></div>
+      </section>
+
+      <section class="section forecast-section">
+        <div class="section-head">
+          <div><small class="eyebrow">7-DAY FORECAST</small><h2>Plan ahead</h2></div>
+        </div>
+        <div id="forecastStrip" class="forecast-strip"></div>
+      </section>
+
+      <section class="section">
+        <div class="sun-card">
+          <div class="section-head"><div><small class="eyebrow">DAYLIGHT</small><h2>Sunrise to sunset</h2></div></div>
+          <div class="sun-arc">
+            <svg viewBox="0 0 600 220" aria-label="sunrise to sunset arc">
+              <path d="M70 175 Q300 10 530 175" class="arc-base"/>
+              <path d="M70 175 Q300 10 530 175" class="arc-progress" id="sunArc"/>
+              <circle id="sunMarker" cx="300" cy="70" r="12"/>
+            </svg>
+            <div class="sun-label left"><b id="sunrise">05:58</b><span>Sunrise</span></div>
+            <div class="sun-label right"><b id="sunset">18:03</b><span>Sunset</span></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="detailsView" class="view">
+      <div class="page-title"><small class="eyebrow">EXPLORE</small><h1>All weather details</h1><p>Personalization decides what appears first; nothing is hidden from you.</p></div>
+      <div class="detail-tabs" id="detailTabs">
+        <button class="active" data-detail="current">Current</button>
+        <button data-detail="forecast">Forecast</button>
+        <button data-detail="environment">Environment</button>
+        <button data-detail="warnings">Warnings</button>
+        <button data-detail="special">Specialized</button>
+      </div>
+      <div id="detailsContent"></div>
+    </section>
+
+    <section id="savedView" class="view">
+      <div class="page-title"><small class="eyebrow">PLACES</small><h1>Saved locations</h1><p>Switch your dashboard location without changing your profile.</p></div>
+      <div class="saved-grid">
+        <button class="saved-card" data-city="Kanpur" data-lat="26.4499" data-lon="80.3319"><b>Kanpur</b><span>Uttar Pradesh</span></button>
+        <button class="saved-card" data-city="Delhi" data-lat="28.6139" data-lon="77.2090"><b>Delhi</b><span>Delhi</span></button>
+        <button class="saved-card" data-city="Mumbai" data-lat="19.0760" data-lon="72.8777"><b>Mumbai</b><span>Maharashtra</span></button>
+      </div>
+    </section>
+
+    <section id="profileView" class="view">
+      <div class="page-title"><small class="eyebrow">PROFILE</small><h1>Your MAUSAM profile</h1><p>Review the interests and display details used by the personalization engine.</p></div>
+      <div class="profile-summary" id="profileSummary"></div>
+    </section>
+
+    <section id="personalizationView" class="view">
+      <div class="page-title"><small class="eyebrow">PERSONALIZATION</small><h1>Customize your homepage</h1><p>Choose interests and weather details. The relevance engine uses these choices with live conditions.</p></div>
+      <div class="settings-card">
+        <h2>Your interests</h2>
+        <div id="settingsProfiles" class="settings-grid"></div>
+      </div>
+      <div class="settings-card">
+        <h2>Weather details you want available</h2>
+        <p class="muted">These remain available even if they are not ranked highly on your homepage.</p>
+        <div id="settingsDetails" class="settings-grid"></div>
+      </div>
+      <div class="settings-card">
+        <div class="setting-row"><div><b>Learning from usage</b><small>Use clicks and views as a small preference signal.</small></div><label class="switch"><input id="learningToggle" type="checkbox" checked><span></span></label></div>
+      </div>
+      <button class="primary-btn" id="savePreferences">Save personalization</button>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
