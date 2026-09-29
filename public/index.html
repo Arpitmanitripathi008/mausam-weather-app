@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0d67b5">
   <title>MAUSAM SmartHome</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <div id="weatherScene" class="weather-scene cloudy">
@@ -24,8 +24,22 @@
       <div><b>MAUSAM</b><small>SmartHome</small></div>
     </div>
     <div class="header-actions">
-      <button class="location-btn" id="locationBtn">● Kanpur</button>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" title="Toggle dark mode">☾ <span class="theme-label">Dark</span></button>
+      <div class="header-location-search" id="headerLocationSearch" aria-label="Search and selected location">
+        <span class="header-location-icon" aria-hidden="true">📍</span>
+        <input
+          id="locationSearchInput"
+          type="search"
+          inputmode="search"
+          autocomplete="off"
+          value="Kanpur"
+          placeholder="Search city or state..."
+          aria-label="Search city or state in India"
+          spellcheck="false"
+        />
+        <button class="location-btn" id="locationBtn" type="button" title="Use my current location" aria-label="Use my current location">◎</button>
+        <button class="location-search-clear" id="locationSearchClear" type="button" aria-label="Clear location search" hidden>×</button>
+        <div class="location-search-results" id="locationSearchResults" role="listbox" aria-label="Location search results"></div>
+      </div>
       <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel">☰ <span>Menu</span></button>
       <div class="menu-panel" id="menuPanel">
         <button data-view="home">⌂ Home</button>
@@ -33,12 +47,14 @@
         <button data-view="saved">☆ Saved Locations</button>
         <button data-view="profile">● Profile</button>
         <button data-view="personalization">⚙ Personalization</button>
+        <button class="menu-theme-btn" id="themeToggle" type="button" aria-pressed="false" title="Toggle dark mode">☾ <span class="theme-label">Dark mode</span></button>
       </div>
     </div>
   </header>
 
   <main>
     <section id="homeView" class="view active">
+
       <div class="hero">
         <div class="hero-top">
           <div><small id="todayLabel">Today</small><h1 id="greeting">Good evening</h1></div>
@@ -106,9 +122,9 @@
     <section id="savedView" class="view">
       <div class="page-title"><small class="eyebrow">PLACES</small><h1>Saved locations</h1><p>Switch your dashboard location without changing your profile.</p></div>
       <div class="saved-grid">
-        <button class="saved-card" data-city="Kanpur" data-lat="26.4499" data-lon="80.3319"><b>Kanpur</b><span>Uttar Pradesh</span></button>
-        <button class="saved-card" data-city="Delhi" data-lat="28.6139" data-lon="77.2090"><b>Delhi</b><span>Delhi</span></button>
-        <button class="saved-card" data-city="Mumbai" data-lat="19.0760" data-lon="72.8777"><b>Mumbai</b><span>Maharashtra</span></button>
+        <button class="saved-card" data-city="Kanpur" data-region="Uttar Pradesh, India" data-lat="26.4499" data-lon="80.3319"><b>Kanpur</b><span>Uttar Pradesh</span></button>
+        <button class="saved-card" data-city="Delhi" data-region="Delhi, India" data-lat="28.6139" data-lon="77.2090"><b>Delhi</b><span>Delhi</span></button>
+        <button class="saved-card" data-city="Mumbai" data-region="Maharashtra, India" data-lat="19.0760" data-lon="72.8777"><b>Mumbai</b><span>Maharashtra</span></button>
       </div>
     </section>
 
@@ -137,6 +153,6 @@
 
   <div id="toast" class="toast"></div>
 </div>
-<script src="app.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>
