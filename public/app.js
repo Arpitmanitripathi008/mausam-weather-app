@@ -84,12 +84,15 @@ function weatherFacts(){
     rain:Number.isFinite(Number(today.rainChance)) ? Number(today.rainChance) : (c.type==="rain" ? 65 : 35),
     wind:c.wind??12, humidity:c.humidity??68, pressure:c.pressure??1006,
     visibility:c.visibility ?? (c.type==="fog" ? 2 : (c.type==="dust" ? 4 : null)),
+    visibility: c.visibility != null
+  ? Number(c.visibility) / 1000
+  : (c.type === "fog" ? 2 : (c.type === "dust" ? 4 : null)),
     uv:a.uv ?? today.uv ?? null,
     aqi:a.value??null,
     warnings:(state.data?.warnings?.warnings?.length||0), fog:c.type==="fog"?80:5,
     type:c.type||today.type||"cloudy",
     wave:state.data?.marine?.waveHeight ?? null,
-    tide:state.data?.marine?.nextTide ?? null,
+    tide: state.data?.marine?.seaLevel ?? null,
     seaTemp:state.data?.marine?.seaTemp ?? null,
     frost:c.temperature!=null ? Math.max(0, 18-c.temperature) : 0,
     forecastMin:Array.isArray(state.data?.forecast?.days)&&state.data.forecast.days.length ? Math.min(...state.data.forecast.days.map(d=>Number(d.min)).filter(Number.isFinite)) : null,
@@ -360,7 +363,7 @@ function renderPersonalized(){
   if(!cards.length) cards.push({icon:"🌤️",title:"Current conditions",key:"temperature",label:"Temp",sub:recommendationFor("traveler","temperature",f),score:50});
   // Keep relevance internal: use it only to prioritize which cards appear first.
   cards.sort((a,b)=>b.score-a.score);
-  $("personalizedCards").innerHTML=cards.map(c=>`<article class="weather-card priority"><div class="card-icon">${c.icon}</div><h3>${c.title}</h3><div class="value">${personalizedValue(c.key,f)}</div><p>${c.label} • ${c.sub}</p></article>`).join("");
+  $("personalizedCards").innerHTML=cards .map(c=>`<article class="weather-card priority"><div class="card-icon">${c.icon}</div><h3>${c.title}</h3><div class="value">${personalizedValue(c.key,f)}</div><p>${c.label} • ${c.sub}</p></article>`).join("");
 }
 
 function renderSun(){
@@ -450,7 +453,7 @@ function updateHero(){
   const clock=getLocationClock();
   const night=isNightTime();
   $("greeting").textContent=night?"Good night":clock.hour<12?"Good morning":clock.hour<17?"Good afternoon":"Good evening";
-  syncLocationUI();
+  $("locationBtn").textContent=`● ${state.city}`;
 }
 
 function renderDetails(){
@@ -520,6 +523,91 @@ async function loadDashboard(){
   updateHero();applyScene();renderPersonalized();renderForecast();renderSun();
   window.clearTimeout(window.__sceneTimer);
   window.__sceneTimer=window.setInterval(()=>{ applyScene(); updateHero(); }, 30*1000);
+async function loadDashboard() {
+  try {
+    // Load the main weather dashboard data
+    state.data = await api(
+      `/api/dashboard?city=${encodeURIComponent(state.city)}&lat=${state.lat}&lon=${state.lon}`
+    );
+
+    // Load live marine data separately
+    try {
+      state.data.marine = await api(
+        `/api/marine?lat=${state.lat}&lon=${state.lon}`
+      );
+    } catch (marineError) {
+      console.warn("Marine data unavailable:", marineError);
+
+      state.data.marine = {
+        available: false,
+        waveHeight: null,
+        seaTemp: null,
+        seaLevel: null
+      };
+    }
+
+  } catch (e) {
+    toast("Using offline demo data.");
+
+    const days = forecastFallback();
+
+    state.data = {
+      current: {
+        station: state.city,
+        temperature: 29,
+        humidity: 68,
+        wind: 12,
+        windDirection: "Westerly",
+        pressure: 1006,
+        type: "cloudy",
+        label: "Partly cloudy",
+        icon: "☁️"
+      },
+
+      forecast: {
+        city: state.city,
+        today: days[0],
+        days,
+        sunrise: "05:58",
+        sunset: "18:03"
+      },
+
+      sun: {
+        sunrise: "05:58",
+        sunset: "18:03"
+      },
+
+      warnings: {
+        warnings: []
+      },
+
+      aqi: {
+        value: null,
+        category: "Not connected"
+      },
+
+      marine: {
+        available: false,
+        waveHeight: null,
+        seaTemp: null,
+        seaLevel: null
+      }
+    };
+  }
+
+  updateHero();
+  applyScene();
+  renderPersonalized();
+  renderForecast();
+  renderSun();
+
+  // Refresh the day/night weather scene every 30 seconds
+  window.clearTimeout(window.__sceneTimer);
+
+  window.__sceneTimer = window.setInterval(() => {
+    applyScene();
+    updateHero();
+  }, 30 * 1000);
 }
 
 document.addEventListener("click",e=>{
