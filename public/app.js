@@ -30,9 +30,31 @@ const DETAIL_LABELS = {
 const $ = id => document.getElementById(id);
 
 async function api(url, options){
-  const r = await fetch(url, options);
+  const r=await fetch(url, options);
   if(!r.ok) throw new Error(`Request failed: ${r.status}`);
   return r.json();
+}
+
+function escapeHtml(value){
+  return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+function saveLocation(){
+  localStorage.setItem("mausam-location", JSON.stringify({city:state.city,lat:state.lat,lon:state.lon}));
+}
+function loadSavedLocation(){
+  try{
+    const saved=JSON.parse(localStorage.getItem("mausam-location")||"null");
+    if(saved && saved.city && Number.isFinite(Number(saved.lat)) && Number.isFinite(Number(saved.lon))){
+      state.city=String(saved.city); state.lat=Number(saved.lat); state.lon=Number(saved.lon);
+    }
+  }catch{}
+}
+function syncLocationUI(){
+  const input=$("locationSearchInput");
+  if(input && document.activeElement!==input) input.value=state.city;
+  const clear=$("locationSearchClear");
+  if(clear && input) clear.hidden=input.value.trim().length===0;
 }
 
 function toast(message){
@@ -61,6 +83,7 @@ function weatherFacts(){
     feelsLike:c.feelsLike ?? ((c.temperature??29)+2),
     rain:Number.isFinite(Number(today.rainChance)) ? Number(today.rainChance) : (c.type==="rain" ? 65 : 35),
     wind:c.wind??12, humidity:c.humidity??68, pressure:c.pressure??1006,
+    visibility:c.visibility ?? (c.type==="fog" ? 2 : (c.type==="dust" ? 4 : null)),
     visibility: c.visibility != null
   ? Number(c.visibility) / 1000
   : (c.type === "fog" ? 2 : (c.type === "dust" ? 4 : null)),
@@ -485,6 +508,21 @@ async function loadPrefs(){
   try{const p=await api(`/api/preferences/${state.userId}`);state.profiles=p.profiles;state.details=p.details;state.learning=p.learning}catch{}
 }
 
+async function loadDashboard(){
+  try{
+    state.data=await api(`/api/dashboard?city=${encodeURIComponent(state.city)}&lat=${state.lat}&lon=${state.lon}`);
+  }catch(e){
+    toast("Using offline demo data.");
+    const days=forecastFallback();
+    state.data={
+      current:{station:state.city,temperature:29,humidity:68,wind:12,windDirection:"Westerly",pressure:1006,type:"cloudy",label:"Partly cloudy",icon:"☁️"},
+      forecast:{city:state.city,today:days[0],days,sunrise:"05:58",sunset:"18:03"},
+      sun:{sunrise:"05:58",sunset:"18:03"},warnings:{warnings:[]},aqi:{value:null,category:"Not connected"}
+    };
+  }
+  updateHero();applyScene();renderPersonalized();renderForecast();renderSun();
+  window.clearTimeout(window.__sceneTimer);
+  window.__sceneTimer=window.setInterval(()=>{ applyScene(); updateHero(); }, 30*1000);
 async function loadDashboard() {
   try {
     // Load the main weather dashboard data
@@ -576,24 +614,68 @@ document.addEventListener("click",e=>{
   const nav=e.target.closest("[data-view]");
   if(nav)setView(nav.dataset.view);
 });
-$("menuBtn").onclick=()=>{const open=$("menuPanel").classList.toggle("open");$("menuBtn").setAttribute("aria-expanded",open)};
+$("menuBtn").onclick=()=>{
+  const open=$("menuPanel").classList.toggle("open");
+  $("menuBtn").setAttribute("aria-expanded",open);
+  if(open && $("locationSearchResults")) $("locationSearchResults").innerHTML="";
+};
 const themeToggleButton=$("themeToggle");
-if(themeToggleButton){
-  themeToggleButton.addEventListener("click",toggleTheme);
-}
-
+if(themeToggleButton) themeToggleButton.addEventListener("click",toggleTheme);
 if($("moreWeather")) $("moreWeather").onclick=()=>setView("details");
 $("savePreferences").onclick=()=>{state.learning=$("learningToggle").checked;savePrefs(true);};
 document.querySelectorAll("[data-detail]").forEach(b=>b.onclick=()=>{state.detailTab=b.dataset.detail;document.querySelectorAll("[data-detail]").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderDetails()});
-document.querySelectorAll(".saved-card").forEach(b=>b.onclick=async()=>{state.city=b.dataset.city;state.lat=Number(b.dataset.lat);state.lon=Number(b.dataset.lon);setView("home");await loadDashboard();toast(`${state.city} selected.`)});
-$("locationBtn").onclick=()=>navigator.geolocation?.getCurrentPosition(async pos=>{state.lat=pos.coords.latitude;state.lon=pos.coords.longitude;toast("Location updated.");await loadDashboard()},()=>toast("Location permission not available."));
+document.querySelectorAll(".saved-card").forEach(b=>b.onclick=async()=>{state.city=b.dataset.city;state.lat=Number(b.dataset.lat);state.lon=Number(b.dataset.lon);saveLocation();setView("home");await loadDashboard();toast(`${state.city} selected.`)});
 
-document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ applyScene(); updateHero(); } });
-window.addEventListener("focus",()=>{ applyScene(); updateHero(); });
+const locationInput=$("locationSearchInput"), locationResults=$("locationSearchResults"), locationClear=$("locationSearchClear");
+let locationSearchTimer=null;
+function renderLocationStatus(message){if(locationResults) locationResults.innerHTML=`<div class="location-search-status">${escapeHtml(message)}</div>`;}
+function renderLocationResults(results){
+  if(!locationResults)return;
+  if(!results.length){renderLocationStatus("No matching Indian locations found.");return;}
+  locationResults.innerHTML=results.map(place=>`<button type="button" class="location-result" data-name="${escapeHtml(place.name??"")}" data-lat="${Number(place.latitude)}" data-lon="${Number(place.longitude)}"><span class="location-result-pin">📍</span><span class="location-result-copy"><strong>${escapeHtml(place.name??"")}</strong><small>${escapeHtml(place.admin1||"")}${place.admin1?", ":""}${escapeHtml(place.country||"India")}</small></span></button>`).join("");
+}
+async function searchLocations(query){
+  if(!locationResults)return;
+  renderLocationStatus("Searching...");
+  try{const response=await api(`/api/geocode?q=${encodeURIComponent(query)}`);renderLocationResults(response.results||[]);}catch(error){console.error(error);renderLocationStatus("Location search is temporarily unavailable.");}
+}
+if(locationInput){
+  locationInput.addEventListener("focus",()=>locationInput.select());
+  locationInput.addEventListener("input",()=>{
+    const query=locationInput.value.trim();
+    if(locationClear)locationClear.hidden=query.length===0;
+    clearTimeout(locationSearchTimer);
+    if(query.length<2){if(locationResults)locationResults.innerHTML="";return;}
+    locationSearchTimer=setTimeout(()=>searchLocations(query),280);
+  });
+  locationInput.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){if(locationResults)locationResults.innerHTML="";locationInput.value=state.city;syncLocationUI();locationInput.blur();}
+    if(e.key==="Enter"){const first=locationResults?.querySelector(".location-result");if(first)first.click();}
+  });
+}
+if(locationClear){locationClear.addEventListener("click",()=>{if(locationInput){locationInput.value="";locationInput.focus();}if(locationResults)locationResults.innerHTML="";});}
+if(locationResults){
+  locationResults.addEventListener("click",async e=>{
+    const result=e.target.closest(".location-result");if(!result)return;
+    const lat=Number(result.dataset.lat),lon=Number(result.dataset.lon);if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
+    state.city=result.dataset.name||"Selected location";state.lat=lat;state.lon=lon;saveLocation();locationInput.value=state.city;locationResults.innerHTML="";locationInput.blur();
+    setView("home");await loadDashboard();toast(`${state.city} selected.`);
+  });
+}
+if($("locationBtn"))$("locationBtn").onclick=()=>{
+  if(!navigator.geolocation){toast("Location services are not supported.");return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{state.city="Current location";state.lat=pos.coords.latitude;state.lon=pos.coords.longitude;saveLocation();syncLocationUI();if(locationResults)locationResults.innerHTML="";await loadDashboard();toast("Current location selected.");},()=>toast("Location permission not available."));
+};
+document.addEventListener("click",e=>{if(!e.target.closest("#headerLocationSearch")&&locationResults)locationResults.innerHTML="";});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){applyScene();updateHero();}});
+window.addEventListener("focus",()=>{applyScene();updateHero();});
 
 (async function init(){
+  loadSavedLocation();
   applyTheme();
+  syncLocationUI();
   await loadPrefs();
   await loadDashboard();
   applyTheme();
+  syncLocationUI();
 })();

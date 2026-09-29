@@ -39,7 +39,28 @@ async function openMeteoAir(lat,lon){
  const category=value==null?"Unavailable":value<=50?"Good":value<=100?"Moderate":value<=150?"Unhealthy for sensitive groups":value<=200?"Unhealthy":value<=300?"Very unhealthy":"Hazardous";
  const out={available:value!=null,value,category,pm25:num(cur.pm2_5),pm10:num(cur.pm10),no2:num(cur.nitrogen_dioxide),ozone:num(cur.ozone),uv:num(cur.uv_index),source:"open-meteo"};cacheSet(key,out);return out;
 }
-async function geocode(q){const p=new URLSearchParams({name:q,count:"5",language:"en",format:"json"});const raw=await fetchJson(`https://geocoding-api.open-meteo.com/v1/search?${p}`);return (raw.results||[]).map(x=>({name:x.name,country:x.country,admin1:x.admin1,latitude:x.latitude,longitude:x.longitude,timezone:x.timezone}))}
+async function geocode(q){
+  const query=String(q||"").trim();
+  if(query.length<2) return [];
+  const p=new URLSearchParams({
+    name:query,
+    count:"8",
+    language:"en",
+    format:"json",
+    countryCode:"IN"
+  });
+  const raw=await fetchJson(`https://geocoding-api.open-meteo.com/v1/search?${p}`);
+  return (raw.results||[]).map(x=>({
+    id:x.id,
+    name:x.name,
+    country:x.country,
+    admin1:x.admin1,
+    admin2:x.admin2,
+    latitude:x.latitude,
+    longitude:x.longitude,
+    timezone:x.timezone
+  }));
+}
 
 function imdHeaders(){
   const headers={Accept:"application/json"};

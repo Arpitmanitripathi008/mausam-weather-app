@@ -970,707 +970,440 @@ main {
 
 /* --- Time-aware weather scene: sunrise by day, moon + stars at night --- */
 .weather-scene.day .scene-moon,
-.weather-scene.day .scene-stars {
-  display: none;
-}
-.weather-scene.night .scene-sun {
-  display: none;
-}
-.weather-scene.night {
-  background: linear-gradient(180deg, #07182d 0%, #183a57 55%, #355d78 100%);
-}
-.weather-scene.night.cloudy {
-  background: linear-gradient(180deg, #0b2037 0%, #234963 55%, #54758c 100%);
-}
-.weather-scene.night.rain {
-  background: linear-gradient(180deg, #071522 0%, #16334b 55%, #34576e 100%);
-}
-.weather-scene.night.storm {
-  background: linear-gradient(180deg, #040b16 0%, #13263a 55%, #2a4359 100%);
-}
-.weather-scene.night.fog {
-  background: linear-gradient(180deg, #1a2b39 0%, #435865 55%, #74848d 100%);
-}
-.weather-scene.night.dust {
-  background: linear-gradient(180deg, #241d1c 0%, #4c3b33 55%, #6b5a4e 100%);
+.weather-scene.day .scene-stars{display:none}
+.weather-scene.night .scene-sun{display:none}
+.weather-scene.night{background:linear-gradient(180deg,#07182d 0%,#183a57 55%,#355d78 100%)}
+.weather-scene.night.cloudy{background:linear-gradient(180deg,#0b2037 0%,#234963 55%,#54758c 100%)}
+.weather-scene.night.rain{background:linear-gradient(180deg,#071522 0%,#16334b 55%,#34576e 100%)}
+.weather-scene.night.storm{background:linear-gradient(180deg,#040b16 0%,#13263a 55%,#2a4359 100%)}
+.weather-scene.night.fog{background:linear-gradient(180deg,#1a2b39 0%,#435865 55%,#74848d 100%)}
+.weather-scene.night.dust{background:linear-gradient(180deg,#241d1c 0%,#4c3b33 55%,#6b5a4e 100%)}
+
+.scene-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.9}
+.scene-stars:before{content:"";position:absolute;inset:4% 0 38% 0;background:
+  radial-gradient(circle at 8% 18%,rgba(255,255,255,.9) 0 1px,transparent 2px),
+  radial-gradient(circle at 15% 34%,rgba(255,255,255,.7) 0 1px,transparent 2px),
+  radial-gradient(circle at 23% 12%,rgba(255,255,255,.85) 0 1px,transparent 2px),
+  radial-gradient(circle at 31% 27%,rgba(255,255,255,.72) 0 1px,transparent 2px),
+  radial-gradient(circle at 39% 8%,rgba(255,255,255,.9) 0 1px,transparent 2px),
+  radial-gradient(circle at 48% 22%,rgba(255,255,255,.72) 0 1px,transparent 2px),
+  radial-gradient(circle at 58% 10%,rgba(255,255,255,.85) 0 1px,transparent 2px),
+  radial-gradient(circle at 67% 30%,rgba(255,255,255,.8) 0 1px,transparent 2px),
+  radial-gradient(circle at 74% 14%,rgba(255,255,255,.9) 0 1px,transparent 2px),
+  radial-gradient(circle at 82% 25%,rgba(255,255,255,.68) 0 1px,transparent 2px),
+  radial-gradient(circle at 91% 10%,rgba(255,255,255,.85) 0 1px,transparent 2px),
+  radial-gradient(circle at 96% 31%,rgba(255,255,255,.7) 0 1px,transparent 2px);}
+.scene-stars:after{content:"";position:absolute;width:280px;height:280px;right:5%;top:5%;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff8cf 0 10%,#f4e7aa 11% 24%,rgba(244,231,170,.35) 25% 42%,transparent 62%);filter:blur(.2px);opacity:.95}
+
+.scene-moon{display:none;position:absolute;width:210px;height:210px;right:4%;top:0%;border-radius:50%;background:radial-gradient(circle at 34% 32%,#fffbe0 0 18%,#e8dfaf 19% 43%,#c9c39e 44% 46%,#8b8f8a 47% 48%,#5d6c76 64%,transparent 66%);box-shadow:0 0 45px rgba(245,239,185,.28),0 0 120px rgba(245,239,185,.12);opacity:.92}
+.scene-moon:before{content:"";position:absolute;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 53% 52%,transparent 0 60%,rgba(20,34,50,.35) 61% 100%);transform:translate(-22px,12px)}
+.weather-scene.night .scene-moon{display:block}
+.weather-scene.night.rain .scene-moon{opacity:.7;filter:blur(.3px)}
+.weather-scene.night .scene-clouds{opacity:.48}
+.weather-scene.night .scene-rain{opacity:.62}
+
+@media(max-width:560px){
+  .scene-stars:after{width:185px;height:185px;right:-3%;top:2%}
+  .scene-moon{width:145px;height:145px;right:4%;top:2%}
 }
 
-.scene-stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: 0.9;
-}
-.scene-stars:before {
-  content: "";
-  position: absolute;
-  inset: 4% 0 38% 0;
-  background:
-    radial-gradient(
-      circle at 8% 18%,
-      rgba(255, 255, 255, 0.9) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 15% 34%,
-      rgba(255, 255, 255, 0.7) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 23% 12%,
-      rgba(255, 255, 255, 0.85) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 31% 27%,
-      rgba(255, 255, 255, 0.72) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 39% 8%,
-      rgba(255, 255, 255, 0.9) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 48% 22%,
-      rgba(255, 255, 255, 0.72) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 58% 10%,
-      rgba(255, 255, 255, 0.85) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 67% 30%,
-      rgba(255, 255, 255, 0.8) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 74% 14%,
-      rgba(255, 255, 255, 0.9) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 82% 25%,
-      rgba(255, 255, 255, 0.68) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 91% 10%,
-      rgba(255, 255, 255, 0.85) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 96% 31%,
-      rgba(255, 255, 255, 0.7) 0 1px,
-      transparent 2px
-    );
-}
-.scene-stars:after {
-  content: "";
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  right: 5%;
-  top: 5%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 35%,
-    #fff8cf 0 10%,
-    #f4e7aa 11% 24%,
-    rgba(244, 231, 170, 0.35) 25% 42%,
-    transparent 62%
-  );
-  filter: blur(0.2px);
-  opacity: 0.95;
-}
-
-.scene-moon {
-  display: none;
-  position: absolute;
-  width: 210px;
-  height: 210px;
-  right: 4%;
-  top: 0%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 34% 32%,
-    #fffbe0 0 18%,
-    #e8dfaf 19% 43%,
-    #c9c39e 44% 46%,
-    #8b8f8a 47% 48%,
-    #5d6c76 64%,
-    transparent 66%
-  );
-  box-shadow:
-    0 0 45px rgba(245, 239, 185, 0.28),
-    0 0 120px rgba(245, 239, 185, 0.12);
-  opacity: 0.92;
-}
-.scene-moon:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 53% 52%,
-    transparent 0 60%,
-    rgba(20, 34, 50, 0.35) 61% 100%
-  );
-  transform: translate(-22px, 12px);
-}
-.weather-scene.night .scene-moon {
-  display: block;
-}
-.weather-scene.night.rain .scene-moon {
-  opacity: 0.7;
-  filter: blur(0.3px);
-}
-.weather-scene.night .scene-clouds {
-  opacity: 0.48;
-}
-.weather-scene.night .scene-rain {
-  opacity: 0.62;
-}
-
-@media (max-width: 560px) {
-  .scene-stars:after {
-    width: 185px;
-    height: 185px;
-    right: -3%;
-    top: 2%;
-  }
-  .scene-moon {
-    width: 145px;
-    height: 145px;
-    right: 4%;
-    top: 2%;
-  }
-}
 
 /* Dark mode: UI theme toggle; weather scene remains time/weather driven. */
-.theme-toggle {
-  border: 1px solid #d8e6ef;
-  background: #fff;
-  color: #0f5f9f;
-  border-radius: 12px;
-  padding: 10px 13px;
-  font-weight: 800;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: 0.2s;
-}
-.theme-toggle:hover {
-  transform: translateY(-1px);
-}
-body.dark-mode {
-  color: #e8f3fb;
-  background: #071521;
-}
-body.dark-mode .app-shell {
-  background: rgba(7, 21, 33, 0.72);
-  border-color: rgba(160, 205, 232, 0.18);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.28);
-}
-body.dark-mode main {
-  background: rgba(7, 21, 33, 0.34);
-}
-body.dark-mode .topbar {
-  background: rgba(10, 28, 43, 0.78);
-  border-bottom-color: rgba(174, 215, 238, 0.16);
-}
-body.dark-mode .brand b,
-body.dark-mode .brand small,
-body.dark-mode .page-title h1,
-body.dark-mode .section-head h2,
-body.dark-mode .personalized-section h2 {
-  color: #edf7ff;
-}
-body.dark-mode .muted,
-body.dark-mode .page-title p,
-body.dark-mode .weather-card p,
-body.dark-mode .forecast-day span,
-body.dark-mode .sun-label span,
-body.dark-mode .setting-option small,
-body.dark-mode .info-card small {
-  color: #a8bfd1;
-}
-body.dark-mode .location-btn,
-body.dark-mode .theme-toggle,
-body.dark-mode .menu-btn {
-  background: rgba(18, 42, 61, 0.86);
-  border-color: rgba(156, 205, 232, 0.22);
-  color: #eaf6ff;
-}
-body.dark-mode .menu-panel {
-  background: rgba(12, 31, 47, 0.96);
-  border-color: rgba(156, 205, 232, 0.18);
-  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.34);
-}
-body.dark-mode .menu-panel button {
-  color: #eaf6ff;
-  background: transparent;
-}
-body.dark-mode .weather-card,
-body.dark-mode .forecast-day,
-body.dark-mode .sun-card,
-body.dark-mode .settings-card,
-body.dark-mode .info-card,
-body.dark-mode .saved-card,
-body.dark-mode .profile-summary,
-body.dark-mode .setting-option,
-body.dark-mode .more-link {
-  background: rgba(14, 35, 52, 0.82);
-  border-color: rgba(151, 202, 231, 0.2);
-  color: #ecf7ff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-}
-body.dark-mode .setting-option.selected {
-  background: rgba(17, 70, 103, 0.78);
-  border-color: rgba(93, 184, 231, 0.48);
-}
-body.dark-mode .count-pill {
-  background: rgba(18, 54, 80, 0.84);
-  color: #dff2ff;
-}
-body.dark-mode .detail-tabs button {
-  background: rgba(14, 35, 52, 0.82);
-  border-color: rgba(151, 202, 231, 0.2);
-  color: #b9d5e8;
-}
-body.dark-mode .detail-tabs button.active {
-  background: rgba(8, 104, 181, 0.92);
-  color: #fff;
-  border-color: #0b78c8;
-}
-body.dark-mode .tag {
-  background: rgba(19, 67, 97, 0.78);
-  color: #d8f0ff;
-}
-body.dark-mode .forecast-section{
-  border-top-color:rgba(255,255,255,.20);
-}
-body.dark-mode .arc-base {
-  stroke: #31516a;
-}
-body.dark-mode .sun-card .arc-progress {
-  stroke: #89bfff;
-}
-body.dark-mode .sun-card .sun-label b {
-  color: #f4fbff;
-}
-body.dark-mode .switch span {
-  background: #3a5367;
-}
-body.dark-mode .primary-btn {
-  background: #0b75c2;
-}
-body.dark-mode .personalized-section {
-  background: transparent;
+.theme-toggle{border:1px solid #d8e6ef;background:#fff;color:#0f5f9f;border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.2s}
+.theme-toggle:hover{transform:translateY(-1px)}
+body.dark-mode{color:#e8f3fb;background:#071521}
+body.dark-mode .app-shell{background:rgba(7,21,33,.72);border-color:rgba(160,205,232,.18);box-shadow:0 15px 45px rgba(0,0,0,.28)}
+body.dark-mode main{background:rgba(7,21,33,.34)}
+body.dark-mode .topbar{background:rgba(10,28,43,.78);border-bottom-color:rgba(174,215,238,.16)}
+body.dark-mode .brand b,body.dark-mode .brand small,body.dark-mode .page-title h1,body.dark-mode .section-head h2,body.dark-mode .personalized-section h2{color:#edf7ff}
+body.dark-mode .muted,body.dark-mode .page-title p,body.dark-mode .weather-card p,body.dark-mode .forecast-day span,body.dark-mode .sun-label span,body.dark-mode .setting-option small,body.dark-mode .info-card small{color:#a8bfd1}
+body.dark-mode .location-btn,body.dark-mode .theme-toggle,body.dark-mode .menu-btn{background:rgba(18,42,61,.86);border-color:rgba(156,205,232,.22);color:#eaf6ff}
+body.dark-mode .menu-panel{background:rgba(12,31,47,.96);border-color:rgba(156,205,232,.18);box-shadow:0 16px 35px rgba(0,0,0,.34)}
+body.dark-mode .menu-panel button{color:#eaf6ff;background:transparent}
+body.dark-mode .weather-card,body.dark-mode .forecast-day,body.dark-mode .sun-card,body.dark-mode .settings-card,body.dark-mode .info-card,body.dark-mode .saved-card,body.dark-mode .profile-summary,body.dark-mode .setting-option,body.dark-mode .more-link{background:rgba(14,35,52,.82);border-color:rgba(151,202,231,.20);color:#ecf7ff;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+body.dark-mode .setting-option.selected{background:rgba(17,70,103,.78);border-color:rgba(93,184,231,.48)}
+body.dark-mode .count-pill{background:rgba(18,54,80,.84);color:#dff2ff}
+body.dark-mode .detail-tabs button{background:rgba(14,35,52,.82);border-color:rgba(151,202,231,.20);color:#b9d5e8}
+body.dark-mode .detail-tabs button.active{background:rgba(8,104,181,.92);color:#fff;border-color:#0b78c8}
+body.dark-mode .tag{background:rgba(19,67,97,.78);color:#d8f0ff}
+body.dark-mode .forecast-section{border-top-color:rgba(180,215,235,.16)}
+body.dark-mode .arc-base{stroke:#31516a}
+body.dark-mode .sun-card .arc-progress{stroke:#89bfff}
+body.dark-mode .sun-card .sun-label b{color:#f4fbff}
+body.dark-mode .switch span{background:#3a5367}
+body.dark-mode .primary-btn{background:#0b75c2}
+body.dark-mode .personalized-section{background:transparent}
+
+@media(max-width:560px){
+  .theme-toggle{padding:9px 11px;border-radius:11px;background:rgba(255,255,255,.60);border-color:rgba(255,255,255,.50);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .theme-label{display:none}
+  body.dark-mode .theme-toggle{background:rgba(11,31,47,.76);border-color:rgba(158,209,235,.22)}
 }
 
-@media (max-width: 560px) {
-  .theme-toggle {
-    padding: 9px 11px;
-    border-radius: 11px;
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  .theme-label {
-    display: none;
-  }
-  body.dark-mode .theme-toggle {
-    background: rgba(11, 31, 47, 0.76);
-    border-color: rgba(158, 209, 235, 0.22);
-  }
-}
 
 /* Final visual reliability fixes: make the theme control visible and the night scene unmistakable. */
-.theme-toggle {
-  min-width: 44px;
-  min-height: 42px;
-  justify-content: center;
-  display: inline-flex !important;
-  align-items: center;
-  gap: 6px;
-  z-index: 25;
+.theme-toggle{
+  min-width:44px;
+  min-height:42px;
+  justify-content:center;
+  display:inline-flex !important;
+  align-items:center;
+  gap:6px;
+  z-index:25;
 }
-.weather-scene.night .scene-stars {
-  display: block !important;
-  opacity: 1;
-  z-index: 1;
+.weather-scene.night .scene-stars{
+  display:block !important;
+  opacity:1;
+  z-index:1;
 }
-.weather-scene.night .scene-moon {
-  display: block !important;
-  z-index: 2;
+.weather-scene.night .scene-moon{
+  display:block !important;
+  z-index:2;
 }
-.weather-scene.night .scene-sun {
-  display: none !important;
+.weather-scene.night .scene-sun{
+  display:none !important;
 }
-.scene-stars:before {
-  animation: starTwinkle 3s ease-in-out infinite alternate;
+.scene-stars:before{
+  animation:starTwinkle 3s ease-in-out infinite alternate;
 }
-@keyframes starTwinkle {
-  from {
-    opacity: 0.55;
-    transform: scale(0.99);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.01);
-  }
+@keyframes starTwinkle{
+  from{opacity:.55;transform:scale(.99)}
+  to{opacity:1;transform:scale(1.01)}
 }
-.scene-moon {
+.scene-moon{
   background:
-    radial-gradient(circle at 31% 30%, #fffde9 0 16%, transparent 17%),
-    radial-gradient(
-      circle at 58% 62%,
-      rgba(193, 188, 157, 0.78) 0 7%,
-      transparent 8%
-    ),
-    radial-gradient(
-      circle at 40% 52%,
-      rgba(173, 168, 142, 0.62) 0 5%,
-      transparent 6%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      #f2edc8 0 54%,
-      #d8d0a9 55% 63%,
-      rgba(216, 208, 169, 0.18) 64%,
-      transparent 70%
-    );
-  box-shadow:
-    0 0 28px rgba(255, 248, 205, 0.35),
-    0 0 90px rgba(255, 242, 183, 0.18);
+    radial-gradient(circle at 31% 30%,#fffde9 0 16%,transparent 17%),
+    radial-gradient(circle at 58% 62%,rgba(193,188,157,.78) 0 7%,transparent 8%),
+    radial-gradient(circle at 40% 52%,rgba(173,168,142,.62) 0 5%,transparent 6%),
+    radial-gradient(circle at 50% 50%,#f2edc8 0 54%,#d8d0a9 55% 63%,rgba(216,208,169,.18) 64%,transparent 70%);
+  box-shadow:0 0 28px rgba(255,248,205,.35),0 0 90px rgba(255,242,183,.18);
 }
-.scene-moon:after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: #07182d;
-  transform: translate(30px, -8px);
-  opacity: 0.96;
+.scene-moon:after{
+  content:"";
+  position:absolute;
+  width:100%;height:100%;
+  border-radius:50%;
+  background:#07182d;
+  transform:translate(30px,-8px);
+  opacity:.96;
 }
-.weather-scene.night.rain .scene-moon:after {
-  background: #0b2037;
-  opacity: 0.84;
-}
-@media (max-width: 560px) {
-  .theme-toggle {
-    min-width: 42px;
-    width: 42px;
-    height: 42px;
-    padding: 0 !important;
-    border-radius: 12px !important;
-  }
-  .theme-label {
-    display: none !important;
-  }
-  .scene-moon {
-    width: 132px;
-    height: 132px;
-    right: 3%;
-    top: 4%;
-  }
-  .scene-stars:before {
-    inset: 2% 0 42% 0;
-  }
+.weather-scene.night.rain .scene-moon:after{background:#0b2037;opacity:.84}
+@media(max-width:560px){
+  .theme-toggle{min-width:42px;width:42px;height:42px;padding:0 !important;border-radius:12px !important;}
+  .theme-label{display:none !important}
+  .scene-moon{width:132px;height:132px;right:3%;top:4%;}
+  .scene-stars:before{inset:2% 0 42% 0}
 }
 
 /* The star layer should contain stars only; moon is rendered by .scene-moon. */
-.scene-stars:after {
-  display: none !important;
-}
-.weather-scene.night .scene-stars:before {
-  display: block !important;
-}
+.scene-stars:after{display:none !important;}
+.weather-scene.night .scene-stars:before{display:block !important;}
+
 
 /* Mobile menu layering fix: keep the menu above all dashboard content and fully usable. */
-.topbar {
-  z-index: 1000;
-  isolation: isolate;
-}
-.header-actions {
-  z-index: 1001;
-}
-.menu-panel.open {
-  z-index: 99999;
-}
+.topbar{z-index:1000;isolation:isolate}
+.header-actions{z-index:1001}
+.menu-panel.open{z-index:99999}
 
-@media (max-width: 850px) {
-  .topbar {
-    position: sticky;
-    top: 0;
+@media (max-width: 850px){
+  .topbar{position:sticky;top:0}
+  .menu-panel{
+    position:fixed !important;
+    top:76px !important;
+    right:12px !important;
+    width:280px !important;
+    max-width:calc(100vw - 24px) !important;
+    max-height:calc(100vh - 92px);
+    overflow:auto;
+    z-index:99999 !important;
+    background:rgba(255,255,255,.95);
+    border:1px solid rgba(210,227,240,.95);
+    border-radius:16px;
+    box-shadow:0 20px 55px rgba(10,38,61,.30);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
   }
-  .menu-panel {
-    position: fixed !important;
-    top: 76px !important;
-    right: 12px !important;
-    width: 280px !important;
-    max-width: calc(100vw - 24px) !important;
-    max-height: calc(100vh - 92px);
-    overflow: auto;
-    z-index: 99999 !important;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(210, 227, 240, 0.95);
-    border-radius: 16px;
-    box-shadow: 0 20px 55px rgba(10, 38, 61, 0.3);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-  }
-  body.dark-mode .menu-panel {
-    background: rgba(10, 29, 44, 0.97);
-    border-color: rgba(152, 202, 230, 0.24);
-    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.45);
+  body.dark-mode .menu-panel{
+    background:rgba(10,29,44,.97);
+    border-color:rgba(152,202,230,.24);
+    box-shadow:0 20px 55px rgba(0,0,0,.45);
   }
 }
 
-@media (max-width: 20px) {
-  .menu-panel {
-    top: 72px !important;
-    left: 12px !important;
-    right: 12px !important;
-    width: auto !important;
-    max-width: none !important;
-    border-radius: 18px;
+@media (max-width:20px){
+  .menu-panel{
+    top:72px !important;
+    left:12px !important;
+    right:12px !important;
+    width:auto !important;
+    max-width:none !important;
+    border-radius:18px;
   }
 }
 
-/* =========================================================
-   FINAL GLASS UI OVERRIDES
-   Keep the weather scene visible in BOTH light and dark mode.
-   Placed at the end intentionally so these rules win the cascade.
-   ========================================================= */
 
-.app-shell {
-  background: rgba(248, 252, 255, 0.3) !important;
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  box-shadow: 0 18px 55px rgba(20, 55, 80, 0.14) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+/* -------------------------------------------------------
+   Location search + selected location homepage controls
+   ------------------------------------------------------- */
+.home-location-panel{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:
+    "selected use"
+    "search search"
+    "results results";
+  gap:12px;
+  margin:0 0 18px;
+  padding:14px;
+  background:rgba(255,255,255,.38);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:18px;
+  box-shadow:0 10px 28px rgba(20,55,80,.08);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  z-index:30;
 }
 
-main,
-.view {
-  background: rgba(245, 250, 254, 0.1) !important;
+.selected-location{
+  grid-area:selected;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.topbar {
-  background: rgba(255, 255, 255, 0.3) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.28) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+.selected-location-icon{font-size:22px}
+.selected-location strong{
+  display:block;
+  margin-top:2px;
+  font-size:17px;
+  color:#173c5b;
+}
+.selected-location span:last-child{
+  display:block;
+  margin-top:2px;
+  font-size:11px;
+  color:#66819a;
 }
 
-.profile-card,
-.weather-card,
-.forecast-day,
-.sun-card,
-.settings-card,
-.info-card,
-.saved-card,
-.profile-summary,
-.setting-option,
-.more-link,
-.detail-tabs button {
-  background: rgba(255, 255, 255, 0.34) !important;
-  border-color: rgba(255, 255, 255, 0.32) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: blur(14px) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
+.use-location-btn{
+  grid-area:use;
+  align-self:center;
+  border:1px solid rgba(8,104,181,.22);
+  background:rgba(255,255,255,.48);
+  color:#075c9f;
+  border-radius:12px;
+  padding:10px 13px;
+  font-weight:800;
+  cursor:pointer;
 }
 
-.profile-card.selected,
-.setting-option.selected {
-  background: rgba(238, 248, 255, 0.52) !important;
-  border-color: rgba(59, 154, 224, 0.52) !important;
+.location-search-wrap{
+  grid-area:search;
+  position:relative;
+  display:flex;
+  align-items:center;
 }
 
-.menu-panel {
-  background: rgba(255, 255, 255, 0.48) !important;
-  border-color: rgba(255, 255, 255, 0.34) !important;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18) !important;
-  backdrop-filter: blur(22px) !important;
-  -webkit-backdrop-filter: blur(22px) !important;
-  z-index: 99999 !important;
+.location-search-icon{
+  position:absolute;
+  left:14px;
+  font-size:20px;
+  color:#49718f;
+  pointer-events:none;
 }
 
-/* Keep the blue weather hero readable but still slightly translucent. */
-.hero {
-  background: linear-gradient(
-    135deg,
-    rgba(7, 80, 140, 0.82),
-    rgba(23, 128, 200, 0.68)
-  ) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+#locationSearchInput{
+  width:100%;
+  border:1px solid rgba(20,80,120,.18);
+  border-radius:13px;
+  padding:13px 42px 13px 42px;
+  background:rgba(255,255,255,.58);
+  color:#102a43;
+  outline:none;
+  font:inherit;
 }
 
-/* ------------------------- DARK MODE ------------------------- */
-body.dark-mode .app-shell {
-  background: rgba(7, 21, 33, 0.28) !important;
-  border-color: rgba(255, 255, 255, 0.13) !important;
-  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+#locationSearchInput:focus{
+  border-color:#2b91d2;
+  box-shadow:0 0 0 3px rgba(43,145,210,.12);
 }
 
-body.dark-mode main,
-body.dark-mode .view {
-  background: rgba(7, 21, 33, 0.1) !important;
+.location-search-clear{
+  position:absolute;
+  right:8px;
+  width:32px;
+  height:32px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.5);
+  color:#56758e;
+  font-size:20px;
+  cursor:pointer;
 }
 
-body.dark-mode .topbar {
-  background: rgba(5, 18, 32, 0.3) !important;
-  border-bottom-color: rgba(255, 255, 255, 0.13) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+.location-search-results{
+  grid-area:results;
+  position:relative;
+  margin-top:-2px;
+  max-height:330px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
 }
 
-body.dark-mode .profile-card,
-body.dark-mode .weather-card,
-body.dark-mode .forecast-day,
-body.dark-mode .sun-card,
-body.dark-mode .settings-card,
-body.dark-mode .info-card,
-body.dark-mode .saved-card,
-body.dark-mode .profile-summary,
-body.dark-mode .setting-option,
-body.dark-mode .more-link,
-body.dark-mode .detail-tabs button {
-  background: rgba(8, 24, 42, 0.3) !important;
-  border-color: rgba(255, 255, 255, 0.13) !important;
-  color: #ecf7ff !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12) !important;
-  backdrop-filter: blur(14px) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
+.location-result{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:13px;
+  padding:11px 12px;
+  text-align:left;
+  background:rgba(255,255,255,.50);
+  color:#173c5b;
+  cursor:pointer;
 }
 
-body.dark-mode .profile-card.selected,
-body.dark-mode .setting-option.selected {
-  background: rgba(17, 70, 103, 0.48) !important;
-  border-color: rgba(93, 184, 231, 0.46) !important;
+.location-result:hover{
+  background:rgba(255,255,255,.76);
 }
 
-body.dark-mode .menu-panel {
-  background: rgba(8, 24, 42, 0.52) !important;
-  border-color: rgba(255, 255, 255, 0.13) !important;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28) !important;
-  backdrop-filter: blur(22px) !important;
-  -webkit-backdrop-filter: blur(22px) !important;
+.location-result-pin{font-size:18px}
+.location-result-copy{min-width:0}
+.location-result-copy strong{
+  display:block;
+  font-size:13px;
+}
+.location-result-copy small{
+  display:block;
+  margin-top:2px;
+  color:#6a8299;
+  font-size:11px;
+}
+.location-search-status{
+  padding:10px 12px;
+  color:#627d96;
+  font-size:12px;
+  background:rgba(255,255,255,.32);
+  border-radius:12px;
 }
 
-body.dark-mode .hero {
-  background: linear-gradient(
-    135deg,
-    rgba(7, 80, 140, 0.78),
-    rgba(23, 128, 200, 0.62)
-  ) !important;
+/* Theme toggle now lives inside the menu */
+.menu-theme-btn{
+  width:100%;
+  margin-top:4px;
+  padding:11px;
+  text-align:left;
+  border:0;
+  border-radius:9px;
+  cursor:pointer;
+  background:rgba(255,255,255,.18);
+  color:#183b5b;
+  font-weight:800;
 }
+.menu-theme-btn:hover{background:rgba(255,255,255,.36)}
 
-/* ------------------------- MOBILE ------------------------- */
-@media (max-width: 560px) {
-  html,
-  body {
-    background: transparent !important;
+@media(max-width:560px){
+  .home-location-panel{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "selected"
+      "use"
+      "search"
+      "results";
+    padding:12px;
+    margin-bottom:14px;
+    border-radius:16px;
   }
-
-  .app-shell {
-    background: rgba(248, 252, 255, 0.28) !important;
-    backdrop-filter: blur(18px) !important;
-    -webkit-backdrop-filter: blur(18px) !important;
+  .use-location-btn{
+    width:100%;
+    justify-self:stretch;
   }
-
-  .topbar {
-    background: rgba(255, 255, 255, 0.28) !important;
-    backdrop-filter: blur(18px) !important;
-    -webkit-backdrop-filter: blur(18px) !important;
-  }
-
-  main,
-  .view {
-    background: rgba(245, 250, 254, 0.08) !important;
-  }
-
-  .profile-card,
-  .weather-card,
-  .forecast-day,
-  .sun-card,
-  .settings-card,
-  .info-card,
-  .saved-card,
-  .profile-summary,
-  .setting-option,
-  .more-link,
-  .detail-tabs button {
-    background: rgba(255, 255, 255, 0.32) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
-  }
-
-  .hero {
-    background: linear-gradient(
-      135deg,
-      rgba(7, 80, 140, 0.78),
-      rgba(23, 128, 200, 0.64)
-    ) !important;
-  }
-
-  .menu-panel {
-    background: rgba(255, 255, 255, 0.5) !important;
-    backdrop-filter: blur(22px) !important;
-    -webkit-backdrop-filter: blur(22px) !important;
-    z-index: 99999 !important;
-  }
-
-  body.dark-mode .app-shell {
-    background: rgba(7, 21, 33, 0.24) !important;
-  }
-
-  body.dark-mode .topbar {
-    background: rgba(5, 18, 32, 0.28) !important;
-  }
-
-  body.dark-mode main,
-  body.dark-mode .view {
-    background: rgba(7, 21, 33, 0.08) !important;
-  }
-
-  body.dark-mode .profile-card,
-  body.dark-mode .weather-card,
-  body.dark-mode .forecast-day,
-  body.dark-mode .sun-card,
-  body.dark-mode .settings-card,
-  body.dark-mode .info-card,
-  body.dark-mode .saved-card,
-  body.dark-mode .profile-summary,
-  body.dark-mode .setting-option,
-  body.dark-mode .more-link,
-  body.dark-mode .detail-tabs button {
-    background: rgba(8, 24, 42, 0.28) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
-  }
-
-  body.dark-mode .menu-panel {
-    background: rgba(8, 24, 42, 0.5) !important;
+  #locationSearchInput{
+    font-size:14px;
+    padding-top:12px;
+    padding-bottom:12px;
   }
 }
-/* Final visible glass separators */
-.forecast-section{
-  border-top:1px solid rgba(20,80,120,.28) !important;
-}
 
-body.dark-mode .forecast-section{
-  border-top-color:rgba(255,255,255,.20) !important;
+/* Dark glass */
+body.dark-mode .home-location-panel{
+  background:rgba(8,25,42,.34);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
+}
+body.dark-mode .selected-location strong{color:#edf7ff}
+body.dark-mode .selected-location span:last-child{color:#a8bfd1}
+body.dark-mode .use-location-btn{
+  background:rgba(8,25,42,.38);
+  border-color:rgba(158,209,235,.20);
+  color:#eaf6ff;
+}
+body.dark-mode #locationSearchInput{
+  background:rgba(8,25,42,.38);
+  color:#edf7ff;
+  border-color:rgba(255,255,255,.12);
+}
+body.dark-mode .location-search-icon,
+body.dark-mode .location-search-clear{color:#b9d5e8}
+body.dark-mode .location-search-clear{background:rgba(8,25,42,.40)}
+body.dark-mode .location-result{
+  background:rgba(8,25,42,.42);
+  color:#edf7ff;
+  border-color:rgba(255,255,255,.10);
+}
+body.dark-mode .location-result:hover{background:rgba(18,54,80,.72)}
+body.dark-mode .location-result-copy small,
+body.dark-mode .location-search-status{color:#a8bfd1}
+body.dark-mode .location-search-status{background:rgba(8,25,42,.30)}
+body.dark-mode .menu-theme-btn{
+  background:rgba(8,25,42,.32);
+  color:#eaf6ff;
+}
+body.dark-mode .menu-theme-btn:hover{background:rgba(18,54,80,.62)}
+
+/* Final location-search header layout */
+.topbar{z-index:1000;isolation:isolate}
+.header-actions{display:flex;align-items:center;gap:8px;position:relative;z-index:1001}
+.header-location-search{position:relative;width:min(330px,42vw);min-width:220px;display:flex;align-items:center;border:1px solid rgba(8,104,181,.20);border-radius:12px;background:rgba(255,255,255,.48);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 7px 20px rgba(20,55,80,.08)}
+.header-location-icon{flex:0 0 auto;padding-left:10px;font-size:15px;pointer-events:none}
+.header-location-search #locationSearchInput{min-width:0;width:100%;border:0;background:transparent;border-radius:12px;padding:10px 70px 10px 8px;color:#123b5a;font:inherit;font-size:13px;font-weight:700;outline:none}
+.header-location-search #locationSearchInput::placeholder{color:#6a8299;font-weight:600}
+.header-location-search .location-btn{flex:0 0 auto;width:34px;height:34px;padding:0;margin-right:4px;border:0;background:rgba(255,255,255,.40);color:#075c9f;border-radius:9px}
+.header-location-search .location-search-clear{position:absolute;right:40px;width:27px;height:27px;padding:0;border:0;border-radius:8px;background:rgba(255,255,255,.40);color:#56758e;font-size:18px;line-height:1;cursor:pointer}
+.header-location-search .location-search-results{position:absolute;top:calc(100% + 8px);right:0;width:min(360px,calc(100vw - 24px));max-height:360px;padding:8px;margin:0;overflow:auto;display:flex;flex-direction:column;gap:6px;border:1px solid rgba(255,255,255,.34);border-radius:14px;background:rgba(255,255,255,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 18px 45px rgba(10,38,61,.20);z-index:100000}
+.header-location-search .location-result{flex:0 0 auto;width:100%;background:rgba(255,255,255,.48)}
+.header-location-search .location-result:hover{background:rgba(255,255,255,.76)}
+.header-location-search .location-search-status{background:rgba(255,255,255,.28);border-radius:10px;padding:11px 12px;color:#627d96;font-size:12px}
+body.dark-mode .header-location-search{border-color:rgba(158,209,235,.20);background:rgba(8,25,42,.40);box-shadow:0 8px 24px rgba(0,0,0,.16)}
+body.dark-mode .header-location-search #locationSearchInput{color:#edf7ff}
+body.dark-mode .header-location-search #locationSearchInput::placeholder{color:#a8bfd1}
+body.dark-mode .header-location-search .location-btn{background:rgba(255,255,255,.06);color:#eaf6ff}
+body.dark-mode .header-location-search .location-search-clear{background:rgba(255,255,255,.05);color:#b9d5e8}
+body.dark-mode .header-location-search .location-search-results{background:rgba(8,25,42,.74);border-color:rgba(255,255,255,.12);box-shadow:0 18px 45px rgba(0,0,0,.30)}
+body.dark-mode .header-location-search .location-result{background:rgba(8,25,42,.48);color:#edf7ff}
+body.dark-mode .header-location-search .location-result:hover{background:rgba(18,54,80,.74)}
+body.dark-mode .header-location-search .location-result-copy small,body.dark-mode .header-location-search .location-search-status{color:#a8bfd1}
+@media(max-width:850px){
+  .topbar{position:sticky;top:0;padding:0 13px}
+  .header-location-search{width:min(300px,44vw);min-width:155px}
+  .header-location-search .location-search-results{right:-4px;width:min(330px,calc(100vw - 20px))}
+}
+@media(max-width:560px){
+  .topbar{height:64px;padding:0 10px}
+  .brand{gap:7px;min-width:0}.brand b{font-size:14px}.brand small{font-size:9px}.brand-mark{width:37px;height:37px}
+  .header-actions{gap:6px;min-width:0}
+  .header-location-search{width:clamp(138px,45vw,190px);min-width:138px;border-radius:11px}
+  .header-location-icon{padding-left:7px;font-size:13px}
+  .header-location-search #locationSearchInput{padding:9px 66px 9px 6px;font-size:12px}
+  .header-location-search .location-btn{width:30px;height:30px;margin-right:3px}
+  .header-location-search .location-search-clear{right:36px;width:24px;height:24px;font-size:16px}
+  .menu-btn{display:block;padding:9px 10px;border-radius:11px;white-space:nowrap}
+  .menu-btn span{display:none}
+  .header-location-search .location-search-results{top:calc(100% + 7px);right:0;max-height:55vh}
+  .home-location-panel{display:none !important}
 }
