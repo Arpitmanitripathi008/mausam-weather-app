@@ -26,11 +26,11 @@ function weatherLabel(t){return ({sunny:"Clear",cloudy:"Partly cloudy",rain:"Rai
 
 async function openMeteoWeather(lat,lon){
  const key=`om:weather:${Number(lat).toFixed(3)}:${Number(lon).toFixed(3)}`; const c=cacheGet(key); if(c)return {...c,source:"cache"};
- const params=new URLSearchParams({latitude:lat,longitude:lon,timezone:"auto",forecast_days:"7",current:"temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure",daily:"weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,sunrise,sunset,uv_index_max",forecast_days:"7"});
+ const params=new URLSearchParams({latitude:lat,longitude:lon,timezone:"auto",forecast_days:"7",current:"temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure,visibility",daily:"weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,sunrise,sunset,uv_index_max",forecast_days:"7"});
  const raw=await fetchJson(`https://api.open-meteo.com/v1/forecast?${params}`);
  const cur=raw.current||{}, d=raw.daily||{};
  const days=(d.time||[]).slice(0,7).map((date,i)=>{const type=weatherType(d.weather_code?.[i]);return {date,min:d.temperature_2m_min?.[i],max:d.temperature_2m_max?.[i],forecast:weatherLabel(type),type,icon:weatherIcon(type),rainChance:d.precipitation_probability_max?.[i]??0,rainMm:d.precipitation_sum?.[i]??0,uv:d.uv_index_max?.[i]??null,sunrise:d.sunrise?.[i]??null,sunset:d.sunset?.[i]??null}});
- const out={current:{station:"Open-Meteo",temperature:cur.temperature_2m,feelsLike:cur.apparent_temperature,humidity:cur.relative_humidity_2m,wind:cur.wind_speed_10m,windDirection:cur.wind_direction_10m,pressure:cur.surface_pressure,rain24h:cur.rain,precipitation:cur.precipitation,weatherCode:cur.weather_code,type:weatherType(cur.weather_code),label:weatherLabel(weatherType(cur.weather_code)),icon:weatherIcon(weatherType(cur.weather_code)),observedAt:cur.time},forecast:{date:days[0]?.date,days,today:days[0]},sun:{sunrise:days[0]?.sunrise?.slice(11,16)||null,sunset:days[0]?.sunset?.slice(11,16)||null},timezone:raw.timezone,source:"open-meteo"}; cacheSet(key,out); return out;
+ const out={current:{station:"Open-Meteo",temperature:cur.temperature_2m,feelsLike:cur.apparent_temperature,humidity:cur.relative_humidity_2m,wind:cur.wind_speed_10m,windDirection:cur.wind_direction_10m,pressure:cur.surface_pressure,visibility: cur.visibility,rain24h:cur.rain,precipitation:cur.precipitation,weatherCode:cur.weather_code,type:weatherType(cur.weather_code),label:weatherLabel(weatherType(cur.weather_code)),icon:weatherIcon(weatherType(cur.weather_code)),observedAt:cur.time},forecast:{date:days[0]?.date,days,today:days[0]},sun:{sunrise:days[0]?.sunrise?.slice(11,16)||null,sunset:days[0]?.sunset?.slice(11,16)||null},timezone:raw.timezone,source:"open-meteo"}; cacheSet(key,out); return out;
 }
 async function openMeteoAir(lat,lon){
  const key=`om:air:${Number(lat).toFixed(3)}:${Number(lon).toFixed(3)}`; const c=cacheGet(key);if(c)return {...c,source:"cache"};
@@ -221,7 +221,53 @@ app.get("/api/dashboard",async(req,res)=>{
 });
 app.post("/api/places/search",async(req,res)=>{try{res.json({ok:true,...await googlePlaces(String(req.body.query||"weather-friendly places"),req.body.lat,req.body.lon)})}catch(e){res.status(502).json({ok:false,error:e.message})}});
 app.post("/api/routes",async(req,res)=>{try{res.json({ok:true,...await googleRoute(req.body.origin,req.body.destination,req.body.mode||"DRIVE")})}catch(e){res.status(502).json({ok:false,error:e.message})}});
-app.get("/api/marine",(req,res)=>res.json({ok:true,available:false,message:"Marine/tide feed is not configured. Add a licensed marine provider before showing real wave/tide data."}));
+app.get("/api/marine", async (req, res) => {
+  try {
+    const lat = Number(req.query.lat);
+    const lon = Number(req.query.lon);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      return res.status(400).json({
+        ok: false,
+        available: false,
+        message: "Valid latitude and longitude are required."
+      });
+    }
+
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
+      timezone: "auto",
+      forecast_days: "2",
+      current: "wave_height,sea_surface_temperature,sea_level_height_msl",
+      hourly: "wave_height,sea_surface_temperature,sea_level_height_msl"
+    });
+
+    const data = await fetchJson(
+      `https://marine-api.open-meteo.com/v1/marine?${params}`
+    );
+
+    const current = data.current || {};
+
+    res.json({
+      ok: true,
+      available: true,
+      source: "Open-Meteo Marine",
+      waveHeight: current.wave_height ?? null,
+      seaTemp: current.sea_surface_temperature ?? null,
+      seaLevel: current.sea_level_height_msl ?? null,
+      observedAt: current.time ?? null
+    });
+  } catch (error) {
+    console.error("Marine API error:", error);
+
+    res.status(500).json({
+      ok: false,
+      available: false,
+      message: "Marine data is temporarily unavailable."
+    });
+  }
+});
 app.get("/api/preferences/:userId",(req,res)=>res.json(preferences[req.params.userId]||{profiles:["fitness"],details:["temperature","rain","wind","humidity","sunrise"],learning:true}));
 app.post("/api/preferences/:userId",(req,res)=>{const profilesAllowed=["fitness","health","commuter","traveler","beach","agriculture","family","events"],detailsAllowed=["temperature","feelsLike","rain","wind","humidity","pressure","visibility","uv","aqi","sunrise","sunset","pollen","wave","tide","seaTemp"];const profiles=(req.body.profiles||[]).filter(x=>profilesAllowed.includes(x));const details=(req.body.details||[]).filter(x=>detailsAllowed.includes(x));const value={profiles:profiles.length?profiles:["fitness"],details:details.length?details:["temperature","rain","wind"],learning:req.body.learning!==false};preferences[req.params.userId]=value;writeJson(PREF_FILE,preferences);res.json({ok:true,...value})});
 app.post("/api/events",(req,res)=>{const file=path.join(DATA_DIR,"events.json"),events=readJson(file,[]);events.push({userId:String(req.body.userId||"demo"),type:String(req.body.type||"view"),item:String(req.body.item||""),at:new Date().toISOString()});writeJson(file,events.slice(-2000));res.json({ok:true})});
